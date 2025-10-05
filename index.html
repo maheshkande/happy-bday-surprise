@@ -54,7 +54,6 @@
             left: 0;
             width: 100%;
             height: 100%;
-            /* Image Background */
             background-image: url('start_bg.jpg');
             background-size: cover;
             background-position: center;
@@ -68,52 +67,69 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            cursor: pointer;
+            cursor: default; /* Remove pointer cursor from overlay */
             opacity: 1;
             transition: opacity 1.5s ease-out, background 1s;
-            overflow: hidden; /* Important for containing flower rain */
-        }
-
-        #start-page-overlay h1 {
-            font-size: 5em;
-            margin-bottom: 20px;
             overflow: hidden;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
         }
         
-        #start-page-overlay span.letter {
-            display: inline-block;
-            opacity: 0;
-            transform: scale(0.5) translateY(20px);
-            animation: popIn 0.5s forwards ease-out;
-            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.4);
+        /* New Start Page Container for the Card Look */
+        .start-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            color: #333;
+            max-width: 90%;
         }
 
-        @keyframes popIn {
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
+        .start-card h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3.5em;
+            color: #e73c7e;
+            margin: 0 0 5px 0;
+            text-shadow: none;
         }
         
-        .start-prompt {
+        .start-card h2 {
+             font-family: 'Poppins', sans-serif;
+             font-size: 2em;
+             margin: 0 0 20px 0;
+             color: #4a001a;
+        }
+
+        .start-card p {
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            color: #555;
+        }
+        
+        /* Start Button Styling */
+        #startButton {
+            background-color: #f67280;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
             font-size: 1.2em;
-            opacity: 0.9;
-            animation: pulse 2s infinite;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
-        
-        @keyframes pulse {
-            0% { opacity: 0.7; }
-            50% { opacity: 1; }
-            100% { opacity: 0.7; }
+
+        #startButton:hover {
+            background-color: #e73c7e;
+            transform: translateY(-2px);
         }
-        
+
         /* --- Flower Rain Styling --- */
         .petal {
             position: absolute;
             width: 10px;
             height: 10px;
-            background-color: #ffb6c1; /* Light Pink */
+            background-color: #ffb6c1; 
             border-radius: 50%;
             opacity: 0;
             z-index: 999;
@@ -131,7 +147,7 @@
         /* ======================================= */
         #main-content {
             display: none;
-            width: 80%;
+            width: 90%;
             max-width: 900px;
             margin: 50px auto;
             position: relative;
@@ -148,21 +164,23 @@
         .mySlides {
             display: none;
             text-align: center;
-            padding: 40px 20px;
+            padding: 20px;
         }
 
         .mySlides img {
             width: 100%;
             max-height: 400px;
-            object-fit: cover;
+            /* 🚩 CHANGE 3: Adjusted object-fit for better image display */
+            object-fit: contain; /* 'contain' ensures the whole image is visible, no cropping */
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             transform: scale(1);
             transition: transform 7s ease-in-out;
+            background-color: #f5f5f5; /* Light background for images that don't fill the space */
         }
         
         .mySlides.active img {
-             transform: scale(1.05); /* Zoom in for Ken Burns */
+             transform: scale(1.05); /* Ken Burns effect */
         }
 
         .caption-text {
@@ -173,14 +191,14 @@
             background: rgba(255, 255, 255, 0.9);
             border-radius: 8px;
             line-height: 1.6;
-            text-align: left; /* Align text left within the box */
+            text-align: left;
         }
         
         /* Typewriter Effect CSS */
         .typewriter-text {
             display: inline-block;
             overflow: hidden;
-            white-space: pre-wrap; /* Allows line breaks while typing */
+            white-space: pre-wrap; 
             width: 0;
             animation: typing 3s steps(60, end) forwards;
             border-right: .15em solid orange;
@@ -203,10 +221,24 @@
         }
 
         .active-dot {
-            background-color: #f67280; /* Pink color for active dot */
+            background-color: #f67280; 
             box-shadow: 0 0 8px rgba(246, 114, 128, 0.8);
         }
 
+        /* Next Button */
+        #nextButton {
+            background-color: #23a6d5;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 1.1em;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            float: right;
+        }
+        
         /* ======================================= */
         /* 4. APOLOGY NOTE STYLES (THE CLIMAX)     */
         /* ======================================= */
@@ -232,14 +264,13 @@
             border-radius: 20px;
             box-shadow: 0 0 50px rgba(255, 0, 100, 0.8), 0 0 10px rgba(0,0,0,0.5);
             text-align: center;
-            font-family: 'Dancing Script', cursive; /* Script Font */
+            font-family: 'Dancing Script', cursive;
             font-size: 2em;
             color: #4a001a;
             line-height: 1.8;
             max-height: 80vh;
             overflow-y: auto;
             
-            /* Curtain Drop Animation */
             transform: translateY(-100%);
             animation: curtainDrop 1.5s forwards cubic-bezier(0.68, -0.55, 0.265, 1.55);
             z-index: 60;
@@ -296,8 +327,14 @@
     <audio id="softMusic" src="soft_music.mp3" preload="auto" loop></audio>
     
     <div id="start-page-overlay">
-        <h1 id="animatedTitle">Happy Bday!</h1>
-        <p class="start-prompt">Click to start your journey</p>
+        <div class="start-card">
+            <h1>Happy Birthday</h1>
+            <h2>My Dearest Sister...</h2>
+            <p>
+                Please turn up your volume before opening your gift!
+            </p>
+            <button id="startButton">Open Your Gift! ✨</button>
+        </div>
     </div>
 
     <div id="main-content">
@@ -342,7 +379,7 @@
                 <div class="caption-text"><span class="typewriter-text">Happy Birthday to the sweetest sister in the world! 🎂✨ You are my biggest blessing, my endless joy, and the one I’ll love not just for today, but for forever — to infinity and beyond. May your heart always shine as bright as your smile." 💖 "Love you from the moon to the stars and beyond 🤗💕".</span></div>
             </div>
             
-            <div style="text-align:center; margin-top:20px;">
+            <div style="text-align:center; margin-top:20px; overflow: hidden;">
                 <span class="dot"></span> 
                 <span class="dot"></span>
                 <span class="dot"></span> 
@@ -351,6 +388,7 @@
                 <span class="dot"></span>
                 <span class="dot"></span> 
                 <span class="dot"></span>
+                <button id="nextButton" onclick="showSlides()">Next Memory &rarr;</button>
             </div>
         </div>
     </div>
@@ -376,32 +414,23 @@
     // JAVASCRIPT LOGIC
     // =======================================
 
-    const SLIDE_DURATION = 8000; 
     const TYPEWRITER_SPEED = 60;
     let slideIndex = 0;
-    let slideInterval;
-    let heartsGenerated = false;
     
     const mainMusic = document.getElementById('mainMusic');
     const softMusic = document.getElementById('softMusic');
 
     // --- START PAGE INITIALIZATION ---
     function setupPage() {
-        // Letter Pop-In Animation
-        const titleElement = document.getElementById('animatedTitle');
-        const text = titleElement.textContent;
-        titleElement.innerHTML = '';
+        // 🚩 CHANGE 1: Attach start function to the button click
+        document.getElementById('startButton').addEventListener('click', startContent);
         
-        text.split('').forEach((char, index) => {
-            const span = document.createElement('span');
-            span.className = 'letter';
-            span.textContent = char === ' ' ? '\u00A0' : char;
-            span.style.animationDelay = `${0.05 * index}s`;
-            titleElement.appendChild(span);
-        });
+        // Music logic to start muted until user clicks the button
+        mainMusic.volume = 0;
+        mainMusic.muted = true;
+        mainMusic.play().catch(e => console.log("Initial silent play failed."));
 
         generateFlowerRain();
-        document.getElementById('start-page-overlay').addEventListener('click', startContent);
     }
     
     // --- FLOWER RAIN GENERATION ---
@@ -414,9 +443,9 @@
             petal.classList.add('petal');
 
             const randomX = Math.random() * 100;
-            const randomDuration = Math.random() * 12 + 8; // 8s to 20s fall time
+            const randomDuration = Math.random() * 12 + 8;
             const randomDelay = Math.random() * 10;
-            const randomSize = Math.random() * 5 + 8; // 8px to 13px
+            const randomSize = Math.random() * 5 + 8;
 
             petal.style.width = `${randomSize}px`;
             petal.style.height = `${randomSize}px`;
@@ -435,6 +464,12 @@
         const mainContent = document.getElementById('main-content');
         
         overlay.style.opacity = '0';
+        
+        // 🚩 CHANGE 4: Music Start Logic (unmute and set volume)
+        mainMusic.muted = false;
+        mainMusic.volume = 0.5;
+        // Ensure it plays from the start
+        mainMusic.currentTime = 0;
 
         setTimeout(() => {
             overlay.style.display = 'none';
@@ -443,9 +478,8 @@
             mainContent.style.transform = 'scale(1)';
             mainContent.style.opacity = '1';
 
-            mainMusic.volume = 0.5; 
-            mainMusic.play().catch(e => console.log("Music auto-play blocked."));
-            
+            // Start the first slide manually
+            slideIndex = 0; // Reset just in case
             showSlides();
         }, 1500); 
     }
@@ -454,43 +488,61 @@
     function showSlides() {
         const slides = document.getElementsByClassName("mySlides");
         const dots = document.getElementsByClassName("dot");
+        const nextButton = document.getElementById('nextButton');
 
         if (slideIndex >= slides.length) {
             // SLIDESHOW ENDED: Trigger the Apology Highlight
-            clearInterval(slideInterval);
             triggerApologyHighlight();
             return;
         }
 
-        // 1. Hide all slides and reset
-        for (let i = 0; i < slides.length; i++) {
-            slides[i].style.display = "none";
-            slides[i].classList.remove('active');
-            dots[i].className = dots[i].className.replace(" active-dot", "");
+        // --- HIDE PREVIOUS SLIDE ---
+        if (slideIndex > 0) {
+             slides[slideIndex - 1].style.display = "none";
+             slides[slideIndex - 1].classList.remove('active');
         }
-        
-        // 2. Get the current slide and caption
+
+        // --- PREPARE CURRENT SLIDE ---
         const currentSlide = slides[slideIndex];
         const captionTextElement = currentSlide.querySelector('.typewriter-text');
         
-        // Reset and prepare the typewriter effect
+        // Hide button while typing is active, show it after
+        nextButton.style.display = 'none';
+
+        // Reset typewriter effect
         const fullText = captionTextElement.textContent;
         captionTextElement.style.width = '0';
         captionTextElement.style.animation = 'none'; 
         captionTextElement.offsetHeight; 
         
-        // Calculate animation duration based on text length
-        const duration = fullText.length / TYPEWRITER_SPEED + 0.5; // +0.5s buffer
+        const duration = fullText.length / TYPEWRITER_SPEED + 0.5; 
         captionTextElement.style.animation = `typing ${duration}s steps(${fullText.length}, end) forwards`;
         
-        // 3. Display the current slide and Ken Burns effect
+        // --- DISPLAY CURRENT SLIDE ---
         currentSlide.style.display = "block";
         currentSlide.classList.add('active');
+        
+        // Update dots
+        for (let i = 0; i < dots.length; i++) {
+             dots[i].className = dots[i].className.replace(" active-dot", "");
+        }
         dots[slideIndex].className += " active-dot";
+        
+        // --- SHOW BUTTON AFTER TYPING ---
+        setTimeout(() => {
+            nextButton.style.display = 'block';
+            if (slideIndex === slides.length - 1) {
+                // Last slide: change button text to lead to the final note
+                nextButton.textContent = "Final Apology & Gift &rarr;";
+                nextButton.style.backgroundColor = '#e73c7e';
+            } else {
+                nextButton.textContent = "Next Memory &rarr;";
+                nextButton.style.backgroundColor = '#23a6d5';
+            }
+        }, duration * 1000); // duration is in seconds, *1000 for ms
 
-        // 4. Set interval for the next slide (total duration: SLIDE_DURATION)
+        // Increment for the next click
         slideIndex++;
-        slideInterval = setTimeout(showSlides, SLIDE_DURATION);
     }
 
     // --- APOLOGY HIGHLIGHT LOGIC ---
@@ -500,6 +552,7 @@
         
         // 1. Stop main music and start soft music fade
         mainMusic.pause();
+        // Fallback for soft music (use main if soft_music.mp3 isn't provided)
         softMusic.src = softMusic.src ? softMusic.src : mainMusic.src; 
         
         softMusic.volume = 0;
@@ -567,4 +620,4 @@
 </script>
 
 </body>
-  </html>
+</html>

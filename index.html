@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To My Most Precious One</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ======================================= */
+        /* 1. GLOBAL & DYNAMIC BACKGROUND STYLES   */
+        /* ======================================= */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+            overflow-x: hidden;
+            height: 100vh;
+            /* Dynamic Background for the main content */
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: GradientBG 15s ease infinite;
+            transition: background-color 0.5s;
+        }
+
+        @keyframes GradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Subtle Background Design */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8bi5AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyFpVFh0UmF3IFByb2ZpbGUgdHlwZSBhYWRvYg+vH8kAAAAgSURBVHjaYmBgYIADhgz4+Lhw3t/fBwiBAQEBAQEAAQYAk7s/hG6y97kAAAAASUVORK5CYII=') repeat;
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* ======================================= */
+        /* 2. START PAGE STYLES (THE ENTRANCE)     */
+        /* ======================================= */
+        #start-page-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Image Background */
+            background-image: url('start_bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: rgba(0, 0, 0, 0.4); 
+            background-blend-mode: darken;
+
+            color: white; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            cursor: pointer;
+            opacity: 1;
+            transition: opacity 1.5s ease-out, background 1s;
+            overflow: hidden; /* Important for containing flower rain */
+        }
+
+        #start-page-overlay h1 {
+            font-size: 5em;
+            margin-bottom: 20px;
+            overflow: hidden;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+        
+        #start-page-overlay span.letter {
+            display: inline-block;
+            opacity: 0;
+            transform: scale(0.5) translateY(20px);
+            animation: popIn 0.5s forwards ease-out;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.4);
+        }
+
+        @keyframes popIn {
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        .start-prompt {
+            font-size: 1.2em;
+            opacity: 0.9;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+        
+        /* --- Flower Rain Styling --- */
+        .petal {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #ffb6c1; /* Light Pink */
+            border-radius: 50%;
+            opacity: 0;
+            z-index: 999;
+            animation: petalFall linear infinite;
+        }
+
+        @keyframes petalFall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 0.8; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+
+
+        /* ======================================= */
+        /* 3. SLIDESHOW STYLES                     */
+        /* ======================================= */
+        #main-content {
+            display: none;
+            width: 80%;
+            max-width: 900px;
+            margin: 50px auto;
+            position: relative;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            transform: scale(0.8); 
+            opacity: 0;
+            transition: all 1s ease-out;
+        }
+
+        .mySlides {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .mySlides img {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transform: scale(1);
+            transition: transform 7s ease-in-out;
+        }
+        
+        .mySlides.active img {
+             transform: scale(1.05); /* Zoom in for Ken Burns */
+        }
+
+        .caption-text {
+            font-size: 1.2em;
+            margin-top: 30px;
+            min-height: 100px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            line-height: 1.6;
+            text-align: left; /* Align text left within the box */
+        }
+        
+        /* Typewriter Effect CSS */
+        .typewriter-text {
+            display: inline-block;
+            overflow: hidden;
+            white-space: pre-wrap; /* Allows line breaks while typing */
+            width: 0;
+            animation: typing 3s steps(60, end) forwards;
+            border-right: .15em solid orange;
+        }
+        
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        
+        /* Pagination Dots */
+        .dot {
+            height: 15px;
+            width: 15px;
+            margin: 0 4px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+            transition: background-color 0.6s ease;
+        }
+
+        .active-dot {
+            background-color: #f67280; /* Pink color for active dot */
+            box-shadow: 0 0 8px rgba(246, 114, 128, 0.8);
+        }
+
+        /* ======================================= */
+        /* 4. APOLOGY NOTE STYLES (THE CLIMAX)     */
+        /* ======================================= */
+        #apology-section {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 50; 
+            padding-top: 5vh;
+        }
+        
+        .apology-box {
+            position: relative;
+            width: 90%;
+            max-width: 700px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 50px 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 50px rgba(255, 0, 100, 0.8), 0 0 10px rgba(0,0,0,0.5);
+            text-align: center;
+            font-family: 'Dancing Script', cursive; /* Script Font */
+            font-size: 2em;
+            color: #4a001a;
+            line-height: 1.8;
+            max-height: 80vh;
+            overflow-y: auto;
+            
+            /* Curtain Drop Animation */
+            transform: translateY(-100%);
+            animation: curtainDrop 1.5s forwards cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 60;
+        }
+        
+        @keyframes curtainDrop {
+            to { transform: translateY(0); }
+        }
+
+        .apology-box h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5em;
+            color: #e73c7e;
+            margin-bottom: 20px;
+        }
+
+        /* Heart Rain Container */
+        .heart-rain-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 55;
+        }
+
+        .heart {
+            position: absolute;
+            background: red;
+            transform: rotate(-45deg);
+            animation: rain linear infinite;
+            box-shadow: 0 0 10px rgba(255, 0, 100, 0.9);
+        }
+
+        /* The following styles are handled by JavaScript for dynamic size */
+        .heart:before, .heart:after {
+            content: "";
+            position: absolute;
+            background: red;
+            border-radius: 50%;
+        }
+
+        @keyframes rain {
+            0% { transform: translateY(-10vh) rotate(-45deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(-45deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body onload="setupPage()">
+
+    <audio id="mainMusic" src="aud.mp3" preload="auto" loop></audio>
+    <audio id="softMusic" src="soft_music.mp3" preload="auto" loop></audio>
+    
+    <div id="start-page-overlay">
+        <h1 id="animatedTitle">Happy Bday!</h1>
+        <p class="start-prompt">Click to start your journey</p>
+    </div>
+
+    <div id="main-content">
+        <div id="slideshow-container">
+            <div class="mySlides">
+                <img src="photo1.jpg" alt="Slide 1">
+                <div class="caption-text"><span class="typewriter-text">ela start cheyalo or ela cheppalo teliyatledu anyway happiest birthday my most precious one💕. Appude nek 19yrs ochesai ra, lock down lo parchayam ayyavu annayya ani msg chesavu, chala important aipoyavu. Ala neetho years pass ayyayi chala love and care choopinchavu💛</span></div>
+            </div>
+
+            <div class="mySlides">
+                <img src="photo2.jpg" alt="Slide 2">
+                <div class="caption-text"><span class="typewriter-text">u r the best one ra. Yeppudu ala navvuthu undu ra, ni smile chala baguntundi. Neetho spend chesina every moment oka manchi memory ra🧡 "Ala ani yekkuva smile cheyaku ra distti thakkuthadi😸jk"</span></div>
+            </div>
+
+            <div class="mySlides">
+                <img src="photo3.jpg" alt="Slide 3">
+                <div class="caption-text"><span class="typewriter-text">Enno sarlu rakhi roju rakhi kadthavu anukune vaadini but okasari kuda avvaledu kani oka rakhi roju kuda miss cheyale nannu wish cheyadam, na paina entha kopam unna avvi anni pakkaki petti wish chesavu🥺</span></div>
+            </div>
+
+            <div class="mySlides">
+                <img src="photo4.jpg" alt="Slide 4">
+                <div class="caption-text"><span class="typewriter-text">na kosam oka gift 5yr dachipettavu chudu I can feel how I am being mean to you have always been my frst priority.</span></div>
+            </div>
+
+            <div class="mySlides">
+                <img src="photo5.jpg" alt="Slide 5">
+                <div class="caption-text"><span class="typewriter-text">No matter how many mistakes I’ve made, my love and respect for you will never change. You’ve always been my strength, my comfort, and my safe place. Even when I fail, I know you’ll always be the one who truly understands me.</span></div>
+            </div>
+
+            <div class="mySlides">
+                <img src="photo6.jpg" alt="Slide 6">
+                <div class="caption-text"><span class="typewriter-text">You were the one who cared for me when no one else did, the one who made sure I never felt alone. Every little act of love from u still lives in my heart, and I realize now how deeply I needed it, how much I need u even today.</span></div>
+            </div>
+
+            <div class="mySlides">
+                <img src="photo7.jpg" alt="Slide 7">
+                <div class="caption-text"><span class="typewriter-text">You always felt my pain even when I didn’t say a word, and you stood by me when I couldn’t stand for myself. That kind of care is rare, and I will never forget how much you gave without expecting anything in return.</span></div>
+            </div>
+
+            <div class="mySlides">
+                <img src="photo8.jpg" alt="Slide 8">
+                <div class="caption-text"><span class="typewriter-text">Happy Birthday to the sweetest sister in the world! 🎂✨ You are my biggest blessing, my endless joy, and the one I’ll love not just for today, but for forever — to infinity and beyond. May your heart always shine as bright as your smile." 💖 "Love you from the moon to the stars and beyond 🤗💕".</span></div>
+            </div>
+            
+            <div style="text-align:center; margin-top:20px;">
+                <span class="dot"></span> 
+                <span class="dot"></span>
+                <span class="dot"></span> 
+                <span class="dot"></span>
+                <span class="dot"></span> 
+                <span class="dot"></span>
+                <span class="dot"></span> 
+                <span class="dot"></span>
+            </div>
+        </div>
+    </div>
+
+    <div id="apology-section">
+        <div class="heart-rain-container"></div>
+        <div class="apology-box">
+            <h2>A Final Word...</h2>
+            <p>
+                "This may be the last time I get to speak to you like this, and I want every word to matter.<br><br>
+                You have been my light, my strength, my safe place. You gave me more love and care than I ever deserved, and I failed to hold on to it. Every mistake I made has cost me the most precious person in my life — you.<br><br>
+                I know now that I’m not the brother you wanted… not the one you deserve. You deserve someone who will always protect your smile, never hurt your heart, and never let you feel alone. I wasn’t that person, though I wished I could be.<br><br>
+                No matter where life takes you from here, please remember: every moment, every memory, every bit of love you gave me will stay with me. Even if I’m no longer by your side, a part of me will always be carrying you in my heart. I’m sorry… for everything."
+                <br><br>
+                --Love you even more 💕
+            </p>
+        </div>
+    </div>
+
+
+<script>
+    // =======================================
+    // JAVASCRIPT LOGIC
+    // =======================================
+
+    const SLIDE_DURATION = 8000; 
+    const TYPEWRITER_SPEED = 60;
+    let slideIndex = 0;
+    let slideInterval;
+    let heartsGenerated = false;
+    
+    const mainMusic = document.getElementById('mainMusic');
+    const softMusic = document.getElementById('softMusic');
+
+    // --- START PAGE INITIALIZATION ---
+    function setupPage() {
+        // Letter Pop-In Animation
+        const titleElement = document.getElementById('animatedTitle');
+        const text = titleElement.textContent;
+        titleElement.innerHTML = '';
+        
+        text.split('').forEach((char, index) => {
+            const span = document.createElement('span');
+            span.className = 'letter';
+            span.textContent = char === ' ' ? '\u00A0' : char;
+            span.style.animationDelay = `${0.05 * index}s`;
+            titleElement.appendChild(span);
+        });
+
+        generateFlowerRain();
+        document.getElementById('start-page-overlay').addEventListener('click', startContent);
+    }
+    
+    // --- FLOWER RAIN GENERATION ---
+    function generateFlowerRain() {
+        const overlay = document.getElementById('start-page-overlay');
+        const petalCount = 40;
+        
+        for (let i = 0; i < petalCount; i++) {
+            const petal = document.createElement('div');
+            petal.classList.add('petal');
+
+            const randomX = Math.random() * 100;
+            const randomDuration = Math.random() * 12 + 8; // 8s to 20s fall time
+            const randomDelay = Math.random() * 10;
+            const randomSize = Math.random() * 5 + 8; // 8px to 13px
+
+            petal.style.width = `${randomSize}px`;
+            petal.style.height = `${randomSize}px`;
+            petal.style.left = `${randomX}vw`;
+            petal.style.animationDuration = `${randomDuration}s`;
+            petal.style.animationDelay = `${randomDelay}s`;
+            petal.style.transform = `rotate(${Math.random() * 360}deg)`;
+
+            overlay.appendChild(petal);
+        }
+    }
+
+
+    function startContent() {
+        const overlay = document.getElementById('start-page-overlay');
+        const mainContent = document.getElementById('main-content');
+        
+        overlay.style.opacity = '0';
+
+        setTimeout(() => {
+            overlay.style.display = 'none';
+            mainContent.style.display = 'block';
+            
+            mainContent.style.transform = 'scale(1)';
+            mainContent.style.opacity = '1';
+
+            mainMusic.volume = 0.5; 
+            mainMusic.play().catch(e => console.log("Music auto-play blocked."));
+            
+            showSlides();
+        }, 1500); 
+    }
+
+    // --- SLIDESHOW LOGIC ---
+    function showSlides() {
+        const slides = document.getElementsByClassName("mySlides");
+        const dots = document.getElementsByClassName("dot");
+
+        if (slideIndex >= slides.length) {
+            // SLIDESHOW ENDED: Trigger the Apology Highlight
+            clearInterval(slideInterval);
+            triggerApologyHighlight();
+            return;
+        }
+
+        // 1. Hide all slides and reset
+        for (let i = 0; i < slides.length; i++) {
+            slides[i].style.display = "none";
+            slides[i].classList.remove('active');
+            dots[i].className = dots[i].className.replace(" active-dot", "");
+        }
+        
+        // 2. Get the current slide and caption
+        const currentSlide = slides[slideIndex];
+        const captionTextElement = currentSlide.querySelector('.typewriter-text');
+        
+        // Reset and prepare the typewriter effect
+        const fullText = captionTextElement.textContent;
+        captionTextElement.style.width = '0';
+        captionTextElement.style.animation = 'none'; 
+        captionTextElement.offsetHeight; 
+        
+        // Calculate animation duration based on text length
+        const duration = fullText.length / TYPEWRITER_SPEED + 0.5; // +0.5s buffer
+        captionTextElement.style.animation = `typing ${duration}s steps(${fullText.length}, end) forwards`;
+        
+        // 3. Display the current slide and Ken Burns effect
+        currentSlide.style.display = "block";
+        currentSlide.classList.add('active');
+        dots[slideIndex].className += " active-dot";
+
+        // 4. Set interval for the next slide (total duration: SLIDE_DURATION)
+        slideIndex++;
+        slideInterval = setTimeout(showSlides, SLIDE_DURATION);
+    }
+
+    // --- APOLOGY HIGHLIGHT LOGIC ---
+    function triggerApologyHighlight() {
+        const apologySection = document.getElementById('apology-section');
+        const rainContainer = document.querySelector('.heart-rain-container');
+        
+        // 1. Stop main music and start soft music fade
+        mainMusic.pause();
+        softMusic.src = softMusic.src ? softMusic.src : mainMusic.src; 
+        
+        softMusic.volume = 0;
+        softMusic.play().catch(e => console.log("Soft music auto-play blocked."));
+
+        let fadeAudio = setInterval(() => {
+            if (softMusic.volume < 0.6) {
+                softMusic.volume = Math.min(1, softMusic.volume + 0.05);
+            } else {
+                clearInterval(fadeAudio);
+            }
+        }, 100);
+
+        // 2. Hide slideshow and show apology section
+        document.getElementById('main-content').style.display = 'none';
+        apologySection.style.display = 'block';
+
+        // 3. Generate Heart Rain (only once)
+        if (!heartsGenerated) {
+            generateHeartRain(rainContainer);
+            heartsGenerated = true;
+        }
+    }
+
+    function generateHeartRain(container) {
+        const heartCount = 75; 
+        
+        for (let i = 0; i < heartCount; i++) {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+
+            const size = Math.random() * 10 + 15;
+            heart.style.width = `${size}px`;
+            heart.style.height = `${size}px`;
+            
+            const randomX = Math.random() * 100;
+            const randomDuration = Math.random() * 10 + 7;
+            const randomDelay = Math.random() * 10;
+
+            heart.style.left = `${randomX}vw`;
+            heart.style.animationDuration = `${randomDuration}s`;
+            heart.style.animationDelay = `${randomDelay}s`;
+
+            // Dynamic CSS for heart shape
+            const style = document.createElement('style');
+            style.innerHTML = `
+                .heart:nth-child(${i + 1}):before,
+                .heart:nth-child(${i + 1}):after {
+                    width: ${size}px;
+                    height: ${size}px;
+                }
+                .heart:nth-child(${i + 1}):before {
+                    top: ${-size / 2}px;
+                }
+                .heart:nth-child(${i + 1}):after {
+                    left: ${size / 2}px;
+                }
+            `;
+            document.head.appendChild(style);
+
+
+            container.appendChild(heart);
+        }
+    }
+</script>
+
+</body>
+  </html>

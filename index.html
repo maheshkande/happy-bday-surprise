@@ -468,8 +468,17 @@
     // --- START PAGE INITIALIZATION ---
     function setupPage() {
         document.getElementById('startButton').addEventListener('click', startContent);
-        // We attempt to play main music muted immediately to satisfy strict mobile browser rules
-        mainMusic.play().catch(e => console.log("Initial silent play failed."));
+        
+        // --- MUSIC INITIALIZATION FIX (NEW) ---
+        // 1. Attempt to play main music muted immediately to satisfy strict mobile browser rules
+        mainMusic.play().catch(e => console.log("Initial silent main music play failed."));
+        
+        // 2. Ensure soft music source is set (prevents a possible null source issue later)
+        if (!softMusic.src) {
+             // As a fallback, use the main music if soft_music.mp3 isn't found
+            softMusic.src = mainMusic.src; 
+        }
+
         generateFlowerRain();
     }
 
@@ -560,12 +569,14 @@
         mainMusic.pause();
         mainMusic.currentTime = 0; 
         
-        // 2. Start soft music (or main music as fallback)
-        softMusic.src = softMusic.src ? softMusic.src : mainMusic.src; 
+        // 2. Start soft music
         softMusic.volume = 0;
         
         try {
+            // Attempt to play soft music
             await softMusic.play();
+            
+            // Fade In
             let fadeAudio = setInterval(() => {
                 if (softMusic.volume < 0.6) {
                     softMusic.volume = Math.min(1, softMusic.volume + 0.05);

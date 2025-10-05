@@ -458,7 +458,6 @@
         audioElement.muted = false;
         audioElement.volume = volume;
         audioElement.loop = loop;
-        // Do NOT reset currentTime or pause/play here
         audioElement.play().catch(e => console.log("Music play failed:", e));
     }
 
@@ -507,8 +506,6 @@
             return;
         }
 
-        // ... (Typing logic remains the same) ...
-
         // --- HIDE PREVIOUS SLIDE ---
         if (slideIndex > 0) {
              slides[slideIndex - 1].style.display = "none";
@@ -554,28 +551,20 @@
         slideIndex++;
     }
 
-    // --- APOLOGY HIGHLIGHT LOGIC (ULTIMATE SMOOTH FIX) ---
+    // --- APOLOGY HIGHLIGHT LOGIC (SIMPLEST FIX) ---
     function triggerApologyHighlight() {
         const apologySection = document.getElementById('apology-section');
         const rainContainer = document.querySelector('.heart-rain-container');
         
-        // 1. Immediately hide the slideshow
-        document.getElementById('main-content').style.display = 'none';
+        // 1. Set the volume instantly to ensure it's audible.
+        // The music is already playing, so we just adjust the volume.
+        mainMusic.volume = 0.6; 
         
-        // 2. Adjust volume down for background soft music effect
-        // We only fade the volume, we never stop the actual playback
-        let fadeDown = setInterval(() => {
-            if (mainMusic.volume > 0.3) {
-                mainMusic.volume -= 0.05;
-            } else {
-                clearInterval(fadeDown);
-            }
-        }, 100);
-
-        // 3. Show apology section
+        // 2. Immediately hide the slideshow and show apology section
+        document.getElementById('main-content').style.display = 'none';
         apologySection.style.display = 'block';
 
-        // 4. Generate Heart Rain (only once)
+        // 3. Generate Heart Rain (only once)
         if (!heartsGenerated) {
             generateHeartRain(rainContainer);
             heartsGenerated = true;

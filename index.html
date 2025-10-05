@@ -39,7 +39,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8bi5AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyFpVFh0UmF3IFByb2ZpbGUgdHlwZSBhYWRvYg+vH8kAAAAgSURBVHjaYmBgYIADhgz4+Lhw3t/fBwiBAQEBAQEAAQYAk7s/hG6y97kAAAAASUVORK5CYII=') repeat;
+            background: url('data:image/png;base64,iVBOR0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8bi5AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyFpVFh0UmF3IFByb2ZpbGUgdHlwZSBhYWRvYg+vH8kAAAAgSURBVHjaYmBgYIADhgz4+Lhw3t/fBwiBAQEBAQEAAQYAk7s/hG6y97kAAAAASUVORK5CYII=') repeat;
             opacity: 0.1;
             pointer-events: none;
             z-index: 1;
@@ -67,7 +67,7 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            cursor: default; /* Remove pointer cursor from overlay */
+            cursor: default;
             opacity: 1;
             transition: opacity 1.5s ease-out, background 1s;
             overflow: hidden;
@@ -170,17 +170,16 @@
         .mySlides img {
             width: 100%;
             max-height: 400px;
-            /* 🚩 CHANGE 3: Adjusted object-fit for better image display */
-            object-fit: contain; /* 'contain' ensures the whole image is visible, no cropping */
+            object-fit: contain; 
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             transform: scale(1);
             transition: transform 7s ease-in-out;
-            background-color: #f5f5f5; /* Light background for images that don't fill the space */
+            background-color: #f5f5f5;
         }
         
         .mySlides.active img {
-             transform: scale(1.05); /* Ken Burns effect */
+             transform: scale(1.05); 
         }
 
         .caption-text {
@@ -210,6 +209,13 @@
         }
         
         /* Pagination Dots */
+        .dot-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
         .dot {
             height: 15px;
             width: 15px;
@@ -225,7 +231,7 @@
             box-shadow: 0 0 8px rgba(246, 114, 128, 0.8);
         }
 
-        /* Next Button */
+        /* Next Button - ❗ FIX: Removed float: right to fix text cut-off */
         #nextButton {
             background-color: #23a6d5;
             color: white;
@@ -236,9 +242,20 @@
             margin-top: 20px;
             cursor: pointer;
             transition: background-color 0.3s;
-            float: right;
+            
+            /* New positioning for Next Button */
+            position: absolute; /* Allows precise placement */
+            right: 20px; /* Aligned to the right edge of the slideshow container */
+            bottom: 20px; /* Positioned below the content */
+            z-index: 20;
         }
         
+        /* Clear the float from the dots container's parent to ensure layout integrity */
+        .slide-footer {
+            height: 60px; /* Give enough space for dots and button */
+            position: relative;
+        }
+
         /* ======================================= */
         /* 4. APOLOGY NOTE STYLES (THE CLIMAX)     */
         /* ======================================= */
@@ -323,7 +340,7 @@
 </head>
 <body onload="setupPage()">
 
-    <audio id="mainMusic" src="aud.mp3" preload="auto" loop></audio>
+    <audio id="mainMusic" src="aud.mp3" preload="auto" loop muted></audio>
     <audio id="softMusic" src="soft_music.mp3" preload="auto" loop></audio>
     
     <div id="start-page-overlay">
@@ -379,15 +396,17 @@
                 <div class="caption-text"><span class="typewriter-text">Happy Birthday to the sweetest sister in the world! 🎂✨ You are my biggest blessing, my endless joy, and the one I’ll love not just for today, but for forever — to infinity and beyond. May your heart always shine as bright as your smile." 💖 "Love you from the moon to the stars and beyond 🤗💕".</span></div>
             </div>
             
-            <div style="text-align:center; margin-top:20px; overflow: hidden;">
-                <span class="dot"></span> 
-                <span class="dot"></span>
-                <span class="dot"></span> 
-                <span class="dot"></span>
-                <span class="dot"></span> 
-                <span class="dot"></span>
-                <span class="dot"></span> 
-                <span class="dot"></span>
+            <div class="slide-footer">
+                <div class="dot-container">
+                    <span class="dot"></span> 
+                    <span class="dot"></span>
+                    <span class="dot"></span> 
+                    <span class="dot"></span>
+                    <span class="dot"></span> 
+                    <span class="dot"></span>
+                    <span class="dot"></span> 
+                    <span class="dot"></span>
+                </div>
                 <button id="nextButton" onclick="showSlides()">Next Memory &rarr;</button>
             </div>
         </div>
@@ -416,20 +435,15 @@
 
     const TYPEWRITER_SPEED = 60;
     let slideIndex = 0;
+    let heartsGenerated = false;
     
     const mainMusic = document.getElementById('mainMusic');
     const softMusic = document.getElementById('softMusic');
 
     // --- START PAGE INITIALIZATION ---
     function setupPage() {
-        // 🚩 CHANGE 1: Attach start function to the button click
+        // Music is already set to play muted in the HTML
         document.getElementById('startButton').addEventListener('click', startContent);
-        
-        // Music logic to start muted until user clicks the button
-        mainMusic.volume = 0;
-        mainMusic.muted = true;
-        mainMusic.play().catch(e => console.log("Initial silent play failed."));
-
         generateFlowerRain();
     }
     
@@ -465,11 +479,12 @@
         
         overlay.style.opacity = '0';
         
-        // 🚩 CHANGE 4: Music Start Logic (unmute and set volume)
+        // ❗ FIX 1: Music Play Logic - UNMUTE and ensure play starts immediately upon user interaction
         mainMusic.muted = false;
         mainMusic.volume = 0.5;
-        // Ensure it plays from the start
-        mainMusic.currentTime = 0;
+        // This attempts to play from the beginning, but if it's already playing (muted), it just unmutes.
+        mainMusic.play().catch(e => console.log("Music play failed, but volume should be set."));
+
 
         setTimeout(() => {
             overlay.style.display = 'none';
@@ -479,7 +494,7 @@
             mainContent.style.opacity = '1';
 
             // Start the first slide manually
-            slideIndex = 0; // Reset just in case
+            slideIndex = 0; 
             showSlides();
         }, 1500); 
     }
@@ -533,13 +548,13 @@
             nextButton.style.display = 'block';
             if (slideIndex === slides.length - 1) {
                 // Last slide: change button text to lead to the final note
-                nextButton.textContent = "Final Apology & Gift &rarr;";
+                nextButton.textContent = "Final Apology & Gift \u2192"; // Used Unicode arrow instead of entity
                 nextButton.style.backgroundColor = '#e73c7e';
             } else {
-                nextButton.textContent = "Next Memory &rarr;";
+                nextButton.textContent = "Next Memory \u2192"; // Used Unicode arrow instead of entity
                 nextButton.style.backgroundColor = '#23a6d5';
             }
-        }, duration * 1000); // duration is in seconds, *1000 for ms
+        }, duration * 1000); 
 
         // Increment for the next click
         slideIndex++;
@@ -552,7 +567,9 @@
         
         // 1. Stop main music and start soft music fade
         mainMusic.pause();
-        // Fallback for soft music (use main if soft_music.mp3 isn't provided)
+        mainMusic.currentTime = 0; // Reset main music for next time
+        
+        // Start soft music (or main music as fallback)
         softMusic.src = softMusic.src ? softMusic.src : mainMusic.src; 
         
         softMusic.volume = 0;

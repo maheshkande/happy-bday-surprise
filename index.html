@@ -39,7 +39,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('data:image/png;base64,iVBOR0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8bi5AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyFpVFh0UmF3IFByb2ZpbGUgdHlwZSBhYWRvYg+vH8kAAAAgSURBVHjaYmBgYIADhgz4+Lhw3t/fBwiBAQEBAQEAAQYAk7s/hG6y97kAAAAASUVORK5CYII=') repeat;
+            background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8bi5AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyFpVFh0UmF3IFByb2ZpbGUgdHlwZSBhYWRvYg+vH8kAAAAgSURBVHjaYmBgYIADhgz4+Lhw3t/fBwiBAQEBAQEAAQYAk7s/hG6y97kAAAAASUVORK5CYII=') repeat;
             opacity: 0.1;
             pointer-events: none;
             z-index: 1;
@@ -231,7 +231,7 @@
             box-shadow: 0 0 8px rgba(246, 114, 128, 0.8);
         }
 
-        /* Next Button - ❗ FIX: Removed float: right to fix text cut-off */
+        /* Next Button */
         #nextButton {
             background-color: #23a6d5;
             color: white;
@@ -243,16 +243,14 @@
             cursor: pointer;
             transition: background-color 0.3s;
             
-            /* New positioning for Next Button */
-            position: absolute; /* Allows precise placement */
-            right: 20px; /* Aligned to the right edge of the slideshow container */
-            bottom: 20px; /* Positioned below the content */
+            position: absolute; 
+            right: 20px; 
+            bottom: 20px; 
             z-index: 20;
         }
         
-        /* Clear the float from the dots container's parent to ensure layout integrity */
         .slide-footer {
-            height: 60px; /* Give enough space for dots and button */
+            height: 60px; 
             position: relative;
         }
 
@@ -303,6 +301,23 @@
             color: #e73c7e;
             margin-bottom: 20px;
         }
+        
+        /* New Restart/Close Button Style */
+        #closeButton {
+            background-color: #ff69b4; /* Hot Pink */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 1.1em;
+            margin-top: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        #closeButton:hover {
+            background-color: #e73c7e;
+        }
 
         /* Heart Rain Container */
         .heart-rain-container {
@@ -324,7 +339,6 @@
             box-shadow: 0 0 10px rgba(255, 0, 100, 0.9);
         }
 
-        /* The following styles are handled by JavaScript for dynamic size */
         .heart:before, .heart:after {
             content: "";
             position: absolute;
@@ -424,6 +438,7 @@
                 <br><br>
                 --Love you even more 💕
             </p>
+            <button id="closeButton" onclick="restartProject()">Just One More Time? ✨</button>
         </div>
     </div>
 
@@ -439,39 +454,24 @@
     
     const mainMusic = document.getElementById('mainMusic');
     const softMusic = document.getElementById('softMusic');
+    
+    // --- MAIN AUDIO FUNCTION ---
+    function playMusic(audioElement, volume, loop = true) {
+        audioElement.muted = false;
+        audioElement.volume = volume;
+        audioElement.loop = loop;
+        audioElement.currentTime = 0; // Always start from the beginning
+        audioElement.play().catch(e => console.log("Music play failed:", e));
+    }
+
 
     // --- START PAGE INITIALIZATION ---
     function setupPage() {
-        // Music is already set to play muted in the HTML
         document.getElementById('startButton').addEventListener('click', startContent);
+        // We attempt to play main music muted immediately to satisfy strict mobile browser rules
+        mainMusic.play().catch(e => console.log("Initial silent play failed."));
         generateFlowerRain();
     }
-    
-    // --- FLOWER RAIN GENERATION ---
-    function generateFlowerRain() {
-        const overlay = document.getElementById('start-page-overlay');
-        const petalCount = 40;
-        
-        for (let i = 0; i < petalCount; i++) {
-            const petal = document.createElement('div');
-            petal.classList.add('petal');
-
-            const randomX = Math.random() * 100;
-            const randomDuration = Math.random() * 12 + 8;
-            const randomDelay = Math.random() * 10;
-            const randomSize = Math.random() * 5 + 8;
-
-            petal.style.width = `${randomSize}px`;
-            petal.style.height = `${randomSize}px`;
-            petal.style.left = `${randomX}vw`;
-            petal.style.animationDuration = `${randomDuration}s`;
-            petal.style.animationDelay = `${randomDelay}s`;
-            petal.style.transform = `rotate(${Math.random() * 360}deg)`;
-
-            overlay.appendChild(petal);
-        }
-    }
-
 
     function startContent() {
         const overlay = document.getElementById('start-page-overlay');
@@ -479,12 +479,8 @@
         
         overlay.style.opacity = '0';
         
-        // ❗ FIX 1: Music Play Logic - UNMUTE and ensure play starts immediately upon user interaction
-        mainMusic.muted = false;
-        mainMusic.volume = 0.5;
-        // This attempts to play from the beginning, but if it's already playing (muted), it just unmutes.
-        mainMusic.play().catch(e => console.log("Music play failed, but volume should be set."));
-
+        // Music Start Logic (unmute and set volume)
+        playMusic(mainMusic, 0.5); // Start main music
 
         setTimeout(() => {
             overlay.style.display = 'none';
@@ -493,7 +489,6 @@
             mainContent.style.transform = 'scale(1)';
             mainContent.style.opacity = '1';
 
-            // Start the first slide manually
             slideIndex = 0; 
             showSlides();
         }, 1500); 
@@ -517,14 +512,12 @@
              slides[slideIndex - 1].classList.remove('active');
         }
 
-        // --- PREPARE CURRENT SLIDE ---
+        // --- PREPARE CURRENT SLIDE (Typewriter Effect) ---
         const currentSlide = slides[slideIndex];
         const captionTextElement = currentSlide.querySelector('.typewriter-text');
         
-        // Hide button while typing is active, show it after
         nextButton.style.display = 'none';
 
-        // Reset typewriter effect
         const fullText = captionTextElement.textContent;
         captionTextElement.style.width = '0';
         captionTextElement.style.animation = 'none'; 
@@ -547,53 +540,105 @@
         setTimeout(() => {
             nextButton.style.display = 'block';
             if (slideIndex === slides.length - 1) {
-                // Last slide: change button text to lead to the final note
-                nextButton.textContent = "Final Apology & Gift \u2192"; // Used Unicode arrow instead of entity
+                nextButton.textContent = "Final Apology & Gift \u2192";
                 nextButton.style.backgroundColor = '#e73c7e';
             } else {
-                nextButton.textContent = "Next Memory \u2192"; // Used Unicode arrow instead of entity
+                nextButton.textContent = "Next Memory \u2192";
                 nextButton.style.backgroundColor = '#23a6d5';
             }
-        }, duration * 1000); 
+        }, duration * 1000);
 
-        // Increment for the next click
         slideIndex++;
     }
 
     // --- APOLOGY HIGHLIGHT LOGIC ---
-    function triggerApologyHighlight() {
+    async function triggerApologyHighlight() {
         const apologySection = document.getElementById('apology-section');
         const rainContainer = document.querySelector('.heart-rain-container');
         
-        // 1. Stop main music and start soft music fade
+        // 1. Stop main music
         mainMusic.pause();
-        mainMusic.currentTime = 0; // Reset main music for next time
+        mainMusic.currentTime = 0; 
         
-        // Start soft music (or main music as fallback)
+        // 2. Start soft music (or main music as fallback)
         softMusic.src = softMusic.src ? softMusic.src : mainMusic.src; 
-        
         softMusic.volume = 0;
-        softMusic.play().catch(e => console.log("Soft music auto-play blocked."));
+        
+        try {
+            await softMusic.play();
+            let fadeAudio = setInterval(() => {
+                if (softMusic.volume < 0.6) {
+                    softMusic.volume = Math.min(1, softMusic.volume + 0.05);
+                } else {
+                    clearInterval(fadeAudio);
+                }
+            }, 100);
+        } catch (e) {
+             console.log("Soft music play failed:", e);
+        }
 
-        let fadeAudio = setInterval(() => {
-            if (softMusic.volume < 0.6) {
-                softMusic.volume = Math.min(1, softMusic.volume + 0.05);
-            } else {
-                clearInterval(fadeAudio);
-            }
-        }, 100);
 
-        // 2. Hide slideshow and show apology section
+        // 3. Hide slideshow and show apology section
         document.getElementById('main-content').style.display = 'none';
         apologySection.style.display = 'block';
 
-        // 3. Generate Heart Rain (only once)
+        // 4. Generate Heart Rain (only once)
         if (!heartsGenerated) {
             generateHeartRain(rainContainer);
             heartsGenerated = true;
         }
     }
+    
+    // --- RESTART LOGIC ---
+    function restartProject() {
+        // 1. Stop all music
+        mainMusic.pause();
+        softMusic.pause();
+        softMusic.currentTime = 0;
+        
+        // 2. Hide apology and reset slideshow
+        document.getElementById('apology-section').style.display = 'none';
+        document.getElementById('main-content').style.display = 'none';
 
+        // 3. Show start page
+        const overlay = document.getElementById('start-page-overlay');
+        overlay.style.display = 'flex';
+        overlay.style.opacity = '1';
+        
+        // 4. Re-setup music for a new start
+        mainMusic.muted = true;
+        mainMusic.play().catch(e => console.log("Initial silent play failed."));
+        
+        // Reset state
+        slideIndex = 0;
+    }
+
+
+    // --- UTILITY FUNCTIONS (Rain, Flowers) ---
+    function generateFlowerRain(container) {
+        const overlay = document.getElementById('start-page-overlay');
+        const petalCount = 40;
+        
+        for (let i = 0; i < petalCount; i++) {
+            const petal = document.createElement('div');
+            petal.classList.add('petal');
+
+            const randomX = Math.random() * 100;
+            const randomDuration = Math.random() * 12 + 8;
+            const randomDelay = Math.random() * 10;
+            const randomSize = Math.random() * 5 + 8;
+
+            petal.style.width = `${randomSize}px`;
+            petal.style.height = `${randomSize}px`;
+            petal.style.left = `${randomX}vw`;
+            petal.style.animationDuration = `${randomDuration}s`;
+            petal.style.animationDelay = `${randomDelay}s`;
+            petal.style.transform = `rotate(${Math.random() * 360}deg)`;
+
+            overlay.appendChild(petal);
+        }
+    }
+    
     function generateHeartRain(container) {
         const heartCount = 75; 
         

@@ -355,7 +355,6 @@
 <body onload="setupPage()">
 
     <audio id="mainMusic" src="aud.mp3" preload="auto" loop muted></audio>
-    <audio id="softMusic" src="soft_music.mp3" preload="auto" loop></audio>
     
     <div id="start-page-overlay">
         <div class="start-card">
@@ -453,14 +452,13 @@
     let heartsGenerated = false;
     
     const mainMusic = document.getElementById('mainMusic');
-    const softMusic = document.getElementById('softMusic');
     
     // --- MAIN AUDIO FUNCTION ---
     function playMusic(audioElement, volume, loop = true) {
         audioElement.muted = false;
         audioElement.volume = volume;
         audioElement.loop = loop;
-        audioElement.currentTime = 0; // Always start from the beginning
+        // Do NOT reset currentTime or pause/play here
         audioElement.play().catch(e => console.log("Music play failed:", e));
     }
 
@@ -469,15 +467,8 @@
     function setupPage() {
         document.getElementById('startButton').addEventListener('click', startContent);
         
-        // --- MUSIC INITIALIZATION FIX (NEW) ---
-        // 1. Attempt to play main music muted immediately to satisfy strict mobile browser rules
+        // 1. Attempt to play main music muted immediately (crucial for mobile autoplay)
         mainMusic.play().catch(e => console.log("Initial silent main music play failed."));
-        
-        // 2. Ensure soft music source is set (prevents a possible null source issue later)
-        if (!softMusic.src) {
-             // As a fallback, use the main music if soft_music.mp3 isn't found
-            softMusic.src = mainMusic.src; 
-        }
 
         generateFlowerRain();
     }
@@ -488,8 +479,9 @@
         
         overlay.style.opacity = '0';
         
-        // Music Start Logic (unmute and set volume)
-        playMusic(mainMusic, 0.5); // Start main music
+        // Music Start Logic: Unmute and set volume
+        // This is the one user click that allows unmuted audio to start
+        playMusic(mainMusic, 0.5); // Start main music for the slideshow
 
         setTimeout(() => {
             overlay.style.display = 'none';
@@ -514,6 +506,8 @@
             triggerApologyHighlight();
             return;
         }
+
+        // ... (Typing logic remains the same) ...
 
         // --- HIDE PREVIOUS SLIDE ---
         if (slideIndex > 0) {
@@ -560,37 +554,25 @@
         slideIndex++;
     }
 
-    // --- APOLOGY HIGHLIGHT LOGIC ---
-    async function triggerApologyHighlight() {
+    // --- APOLOGY HIGHLIGHT LOGIC (ULTIMATE SMOOTH FIX) ---
+    function triggerApologyHighlight() {
         const apologySection = document.getElementById('apology-section');
         const rainContainer = document.querySelector('.heart-rain-container');
         
-        // 1. Stop main music
-        mainMusic.pause();
-        mainMusic.currentTime = 0; 
-        
-        // 2. Start soft music
-        softMusic.volume = 0;
-        
-        try {
-            // Attempt to play soft music
-            await softMusic.play();
-            
-            // Fade In
-            let fadeAudio = setInterval(() => {
-                if (softMusic.volume < 0.6) {
-                    softMusic.volume = Math.min(1, softMusic.volume + 0.05);
-                } else {
-                    clearInterval(fadeAudio);
-                }
-            }, 100);
-        } catch (e) {
-             console.log("Soft music play failed:", e);
-        }
-
-
-        // 3. Hide slideshow and show apology section
+        // 1. Immediately hide the slideshow
         document.getElementById('main-content').style.display = 'none';
+        
+        // 2. Adjust volume down for background soft music effect
+        // We only fade the volume, we never stop the actual playback
+        let fadeDown = setInterval(() => {
+            if (mainMusic.volume > 0.3) {
+                mainMusic.volume -= 0.05;
+            } else {
+                clearInterval(fadeDown);
+            }
+        }, 100);
+
+        // 3. Show apology section
         apologySection.style.display = 'block';
 
         // 4. Generate Heart Rain (only once)
@@ -602,10 +584,9 @@
     
     // --- RESTART LOGIC ---
     function restartProject() {
-        // 1. Stop all music
+        // 1. Fully stop and reset the music only when restarting the whole project
         mainMusic.pause();
-        softMusic.pause();
-        softMusic.currentTime = 0;
+        mainMusic.currentTime = 0;
         
         // 2. Hide apology and reset slideshow
         document.getElementById('apology-section').style.display = 'none';
